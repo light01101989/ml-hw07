@@ -20,10 +20,12 @@ function T=id3tree(xTr,yTr,maxdepth,weights)
 [d,n] = size(xTr);
 
 if ~exist('maxdepth','var')
-    maxdepth = ceil(log2(n))+1;
-end
+    %maxdepth = ceil(log2(n))+1;
+    maxdepth = Inf;
+else
 nnodes = 2^maxdepth - 1;
 T = zeros(6,nnodes);
+end
 
 if ~exist('weights','var')
     weights=ones(1,n)./n;
@@ -35,16 +37,20 @@ data = xTr;
 label = yTr;
 wgts = weights;
 
-for i=1:maxdepth
+%for i=1:maxdepth
+i=1;
+while i<=maxdepth
     pos = zeros(1,2^(i)+1);
     n_xTr = [];
     n_yTr = [];
     n_weights = [];
     start_node = 2^(i-1);
+    cnt=0;
     for j=1:2^(i-1)
         cur_node = start_node+(j-1);
         parent = floor(cur_node/2);
         if parent && T(4,parent) == 0 % parent is leaf
+            cnt = cnt+1;
             continue;
         end
         a = pointer(j)+1; b = pointer(j+1);
@@ -65,6 +71,7 @@ for i=1:maxdepth
             % Create leaf node
             T(4,cur_node) = 0;
             T(5,cur_node) = 0;
+            cnt = cnt+1;
             continue; % no more data split required
         else
             T(4,cur_node) = 2*cur_node;
@@ -86,14 +93,13 @@ for i=1:maxdepth
         n_yTr = [n_yTr,l_yTr,r_yTr];
         n_weights = [n_weights,l_weights,r_weights];
     end
+    if (cnt == 2^(i-1))
+        break;
+    end
     % Update
     pointer = cumsum(pos);
     data = n_xTr;
     label = n_yTr;
     wgts = n_weights;
+    i=i+1;
 end
-
-
-
-
-
