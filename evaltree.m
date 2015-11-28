@@ -11,4 +11,19 @@ function [ypredict]=evaltree(T,xTe)
 %
 
 %% fill in code here
+[d,n] = size(xTe);
 
+for i=1:n
+    j=1;
+    % check if not leaf
+    while (T(4,j)~=0 && T(5,j)~=0)
+        if (xTe(T(2,j),i)<T(3,j))
+            % left
+            j = T(4,j);
+        else
+            % right
+            j = T(5,j);
+        end
+    end
+    ypredict(i) = T(1,j);
+end
