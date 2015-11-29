@@ -59,9 +59,17 @@ while i<=maxdepth
         clabel = label(:,a:b);
         cwgts = wgts(:,a:b);
 
+        %% For prediction
+        [uniq,~,~] = unique(clabel);
+        vote = [];
+        for k=1:length(uniq)
+            vote(k)=sum((clabel==uniq(k)).*cwgts,2);
+        end
+        [~,predidx]=max(vote);
+
         % when maxdepth is reached:make every node as leaf
         if i == maxdepth
-            T(1,cur_node) = mode(clabel); %split
+            T(1,cur_node) = uniq(predidx); %split
             T(6,cur_node) = parent;
             cnt = cnt+1;
             continue;
@@ -72,7 +80,7 @@ while i<=maxdepth
         else
             [feature,cut,Hbest] = entropysplit(cdata,clabel,cwgts); % split with data for this node
         end
-        T(1,cur_node) = mode(clabel); %split
+        T(1,cur_node) = uniq(predidx); %split
         T(2,cur_node) = feature;
         T(3,cur_node) = cut;
         T(6,cur_node) = parent;

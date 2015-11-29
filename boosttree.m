@@ -42,5 +42,5 @@ for i=1:nt
     weights = weights./sum(weights,2);
 end
 % Boosted Tree
-BDT.trees=T;
+BDT.trees=T(:,:,1:length(alpha));
 BDT.alpha = alpha;

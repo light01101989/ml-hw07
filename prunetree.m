@@ -18,6 +18,7 @@ function T=prunetree(T,xTe,y)
 init_acc=analyze('acc',y,evaltree(T,xTe));
 best_acc = init_acc;
 T_hat = T;
+T_lastgood = T;
 
 [~,validnodesidx] = find((T(6,:)~=0));
 validnodes = T(:,validnodesidx);
