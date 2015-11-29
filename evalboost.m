@@ -13,5 +13,11 @@ function preds=evalboost(BDT,xTe)
 %
 
 %% fill in code here
+[~,~,nTrees]=size(BDT.trees);
+
+for i=1:nTrees
+    y(i,:)=evaltree(BDT.trees(:,:,i),xTe);
+end
+preds = mode(y,1);
 
 

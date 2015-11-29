@@ -53,10 +53,20 @@ while i<=maxdepth
             cnt = cnt+1;
             continue;
         end
+
         a = pointer(j)+1; b = pointer(j+1);
         cdata = data(:,a:b);
         clabel = label(:,a:b);
         cwgts = wgts(:,a:b);
+
+        % when maxdepth is reached:make every node as leaf
+        if i == maxdepth
+            T(1,cur_node) = mode(clabel); %split
+            T(6,cur_node) = parent;
+            cnt = cnt+1;
+            continue;
+        end
+
         if range(clabel) == 0
             feature = 0; cut = 0; Hbest = Inf; % data is pure
         else

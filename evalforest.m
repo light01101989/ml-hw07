@@ -13,4 +13,10 @@ function preds=evalforest(F,xTe)
 %
 
 %% fill in code here
+[~,~,nTrees]=size(F);
+
+for i=1:nTrees
+    y(i,:)=evaltree(F(:,:,i),xTe);
+end
+preds = mode(y,1);
 

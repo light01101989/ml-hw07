@@ -16,5 +16,31 @@ function BDT=boosttree(x,y,nt,maxdepth)
 
 
 %% fill in code here
+if ~exist('nt','var')
+    nt = 100;
+end
 
+if ~exist('maxdepth','var')
+    maxdepth = 3;
+end
 
+[d,n]=size(x);
+weights = ones(1,n)./n;
+
+for i=1:nt
+    T(:,:,i)=id3tree(x,y,maxdepth,weights);
+    ypredict=evaltree(T(:,:,i),x);
+    % weighted error
+    epsi = sum((y~=ypredict).*weights,2);
+    if epsi>0.5
+        break;
+    end
+    alpha(i) = 0.5.*log((1-epsi)/epsi);
+    % update weights
+    weights = weights.*(exp(alpha(i).*(2.*(y~=ypredict)-1)));
+    % normalization
+    weights = weights./sum(weights,2);
+end
+% Boosted Tree
+BDT.trees=T;
+BDT.alpha = alpha;
